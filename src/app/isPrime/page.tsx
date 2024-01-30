@@ -1,10 +1,13 @@
-import { PageLayout } from "@/components/PageLayout";
+import { PageLayout } from "../../components/PageLayout";
 import { IsPrimeForm } from "./IsPrimeForm";
+import { Suspense } from "react";
 
 const IsPrimePage = () => {
   return (
     <PageLayout>
-      <IsPrimeForm />
+      <Suspense>
+        <IsPrimeForm />
+      </Suspense>
     </PageLayout>
   );
 };

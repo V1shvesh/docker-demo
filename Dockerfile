@@ -18,19 +18,30 @@ WORKDIR /usr/src/app
 # Leverage a cache mount to /root/.yarn to speed up subsequent builds.
 # Leverage a bind mounts to package.json and yarn.lock to avoid having to copy them into
 # into this layer.
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=yarn.lock,target=yarn.lock \
-    --mount=type=cache,target=/root/.yarn \
-    yarn install --production --frozen-lockfile
+# RUN --mount=type=bind,source=package.json,target=package.json \
+#     --mount=type=bind,source=yarn.lock,target=yarn.lock \
+#     --mount=type=cache,target=/root/.yarn \
+#     yarn install --production --frozen-lockfile
+
+COPY ./package.json .
+
+COPY ./yarn.lock .
+
+RUN yarn install --production --frozen-lockfile
+
+RUN chmod -R 777 /usr/src/app
 
 # Run the application as a non-root user.
 USER node
 
+
 # Copy the rest of the source files into the image.
 COPY . .
+
+RUN yarn build
 
 # Expose the port that the application listens on.
 EXPOSE 3000
 
 # Run the application.
-CMD npm start
+CMD yarn start
